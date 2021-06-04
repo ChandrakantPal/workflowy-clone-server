@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "serve":"node index",
-    "start": "node index"
+    "serve": "node index",
+    "start": "node index",
+    "dev": "nodemon index"
   },
   "author": "sanjay",
   "license": "ISC",
@@ -17,6 +18,6 @@
     "mongoose": "^5.11.9"
   },
   "devDependencies": {
-    "nodemon": "^2.0.6"
+    "nodemon": "^2.0.7"
   }
 }
