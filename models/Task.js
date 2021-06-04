@@ -4,11 +4,10 @@ const taskSchema = new Schema({
   body: String,
   username: String,
   createdAt: String,
-  subTask: [
+  subTasks: [
     {
-      body: String,
-      username: String,
-      createdAt: String,
+      type: Schema.Types.ObjectId,
+      ref: 'tasks',
     },
   ],
   user: {
