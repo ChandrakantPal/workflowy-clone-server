@@ -6,7 +6,10 @@ module.exports = gql`
     body: String!
     createdAt: String!
     username: String!
-    subTask: [Post]!
+    subTasks: [SubTask]
+  }
+  type SubTask {
+    id: ID!
   }
   type User {
     id: ID!
@@ -29,7 +32,9 @@ module.exports = gql`
     register(registerInput: RegisterInput): User!
     login(username: String!, password: String!): User!
     createTask(body: String!): Task!
-    deleteTask(postId: ID!): String!
+    deleteTask(taskId: ID!): String!
+    createSubTask(taskId: ID!, body: String!): Task!
+    deleteSubTask(taskId: ID!, subTaskId: ID!): Task!
   }
   type Subscription {
     newTask: Task!
