@@ -6,7 +6,7 @@ const checkAuth = require('../../utils/checkAuth')
 module.exports = {
   Mutation: {
     createSubTask: async (_, { taskId, body }, context) => {
-      const { username } = checkAuth(context)
+      const { username, id } = checkAuth(context)
       if (body.trim() === '') {
         throw new UserInputError('Empty comment', {
           errors: {
@@ -16,19 +16,21 @@ module.exports = {
       }
       const newSubTask = new Task({
         body,
-        user: context.user.id,
+        user: id,
         username: username,
         createdAt: new Date().toISOString(),
         subTasks: [],
       })
       const subTask = await newSubTask.save()
       const task = await Task.findById(taskId)
-      console.log({ task, subTask })
+      console.log({ task, subTask }, subTask._id, typeof subTask._id)
 
       if (task) {
         task.subTasks.unshift({
-          id: subTask.id,
+          subTaskId: subTask._id,
+          subTaskTitle: subTask.body,
         })
+        console.log({ task })
         await task.save()
         return task
       } else {
