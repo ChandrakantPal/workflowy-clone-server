@@ -52,10 +52,21 @@ module.exports = {
     },
     async deleteTask(_, { taskId }, context) {
       const user = checkAuth(context)
-
       try {
         const task = await Task.findById(taskId)
+        const deleteSubTask = (subTasksToDelete) => {
+          if (subTasksToDelete.subTasks.length > 0) {
+            subTasksToDelete.subTasks.forEach(async (subTask) => {
+              const sub = await Task.findById(subTask.subTaskId)
+              if (sub.subTasks.length > 0) {
+                deleteSubTask(sub)
+              }
+              await (await Task.findById(subTask.subTaskId)).delete()
+            })
+          }
+        }
         if (user.username === task.username) {
+          deleteSubTask(task)
           await task.delete()
           return 'Task deleted Sucessfully'
         } else {
