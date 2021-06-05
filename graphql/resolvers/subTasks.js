@@ -19,11 +19,11 @@ module.exports = {
         user: id,
         username: username,
         createdAt: new Date().toISOString(),
+        isRoot: false,
         subTasks: [],
       })
       const subTask = await newSubTask.save()
       const task = await Task.findById(taskId)
-      console.log({ task, subTask }, subTask._id, typeof subTask._id)
 
       if (task) {
         task.subTasks.unshift({
