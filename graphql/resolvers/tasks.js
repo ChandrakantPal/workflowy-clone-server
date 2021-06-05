@@ -7,7 +7,7 @@ module.exports = {
   Query: {
     async getTasks() {
       try {
-        const tasks = await Task.find().sort({ createdAt: -1 })
+        const tasks = await Task.find({ isRoot: true }).sort({ createdAt: -1 })
         return tasks
       } catch (error) {
         throw new Error(error)
@@ -38,6 +38,7 @@ module.exports = {
         user: user.id,
         username: user.username,
         createdAt: new Date().toISOString(),
+        isRoot: true,
         subTasks: [],
       })
 
