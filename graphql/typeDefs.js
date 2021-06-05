@@ -9,7 +9,8 @@ module.exports = gql`
     subTasks: [SubTask]
   }
   type SubTask {
-    id: ID!
+    subTaskId: ID!
+    subTaskTitle: String!
   }
   type User {
     id: ID!
