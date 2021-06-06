@@ -20,6 +20,7 @@ module.exports = {
         username: username,
         createdAt: new Date().toISOString(),
         isRoot: false,
+        isDone: false,
         subTasks: [],
       })
       const subTask = await newSubTask.save()
