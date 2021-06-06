@@ -4,6 +4,7 @@ const subTasksResolvers = require('./subTasks')
 
 module.exports = {
   Query: {
+    ...usersResolvers.Query,
     ...tasksResolvers.Query,
   },
   Mutation: {
