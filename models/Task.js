@@ -5,6 +5,7 @@ const taskSchema = new Schema({
   username: String,
   createdAt: String,
   isRoot: Boolean,
+  isDone: Boolean,
   subTasks: [
     {
       subTaskId: {
