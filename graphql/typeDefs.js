@@ -6,6 +6,8 @@ module.exports = gql`
     body: String!
     createdAt: String!
     username: String!
+    isDone: Boolean!
+    isRoot: Boolean!
     subTasks: [SubTask]
   }
   type SubTask {
@@ -28,14 +30,15 @@ module.exports = gql`
   type Query {
     getTasks: [Task]
     getTask(taskId: ID!): Task
+    login(username: String!, password: String!): User!
   }
   type Mutation {
     register(registerInput: RegisterInput): User!
-    login(username: String!, password: String!): User!
     createTask(body: String!): Task!
     deleteTask(taskId: ID!): String!
     createSubTask(taskId: ID!, body: String!): Task!
     deleteSubTask(taskId: ID!, subTaskId: ID!): Task!
+    markDone(taskId: ID!): Task!
   }
   type Subscription {
     newTask: Task!
