@@ -39,6 +39,7 @@ module.exports = {
         username: user.username,
         createdAt: new Date().toISOString(),
         isRoot: true,
+        isDone: false,
         subTasks: [],
       })
 
@@ -74,6 +75,24 @@ module.exports = {
         }
       } catch (error) {
         throw new Error(error)
+      }
+    },
+    async markDone(_, { taskId }, context) {
+      const { username } = checkAuth(context)
+
+      const task = await Task.findById(taskId)
+      if (task && username) {
+        if (task.isDone) {
+          // task already done, undo it
+          task.isDone = false
+        } else {
+          // not done, mark done
+          task.isDone = false
+        }
+        await task.save()
+        return task
+      } else {
+        throw new UserInputError('Post not founnd')
       }
     },
   },
