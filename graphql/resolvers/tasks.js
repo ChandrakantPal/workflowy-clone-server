@@ -78,6 +78,46 @@ module.exports = {
         throw new Error(error)
       }
     },
+    createSubTask: async (_, { taskId, body }, context) => {
+      const { username, id } = checkAuth(context)
+      try {
+        if (body.trim() === '') {
+          throw new UserInputError('Empty comment', {
+            errors: {
+              body: 'Comment body must not be empty',
+            },
+          })
+        }
+        const newSubTask = new Task({
+          body,
+          user: id,
+          username: username,
+          createdAt: new Date().toISOString(),
+          isRoot: false,
+          isDone: false,
+          subTasks: [],
+        })
+        const subTask = await newSubTask.save()
+        context.pubsub.publish('NEW_TASK', {
+          newTask: subTask,
+        })
+        const task = await Task.findById(taskId)
+
+        if (task) {
+          task.subTasks.unshift({
+            subTaskId: subTask._id,
+            subTaskTitle: subTask.body,
+          })
+          console.log({ task })
+          await task.save()
+          return task
+        } else {
+          throw new UserInputError('Post not founnd')
+        }
+      } catch (error) {
+        throw new Error(error)
+      }
+    },
     async deleteTask(_, { taskId }, context) {
       const user = checkAuth(context)
       try {
