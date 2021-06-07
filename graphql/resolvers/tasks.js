@@ -101,16 +101,15 @@ module.exports = {
       }
     },
     async markDone(_, { taskId }, context) {
-      const { username } = checkAuth(context)
-
+      checkAuth(context)
       const task = await Task.findById(taskId)
-      if (task && username) {
+      if (task) {
         if (task.isDone) {
           // task already done, undo it
           task.isDone = false
         } else {
           // not done, mark done
-          task.isDone = false
+          task.isDone = true
         }
         await task.save()
         return task
