@@ -117,6 +117,21 @@ module.exports = {
         throw new UserInputError('Post not founnd')
       }
     },
+    async editTask(_, { taskId, body }, context){
+      checkAuth(context)
+      if (body.trim() === '') {
+        throw new Error('Task body must not be empty')
+      }
+      const task = await Task.findById(taskId)
+      if (task) {
+        if (task.isDone) {
+        task.body = body
+        await task.save()
+        return task
+      } else {
+        throw new UserInputError('Post not founnd')
+      }
+    }
   },
   Subscription: {
     newTask: {
