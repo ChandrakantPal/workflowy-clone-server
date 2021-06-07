@@ -27,9 +27,24 @@ module.exports = gql`
     confirmPassword: String!
     email: String!
   }
+  input SubTaskId {
+    subTaskId: ID!
+  }
+  input SubTaskTitle {
+    subTaskTitle: String!
+  }
+  input IdList {
+    subTaskId: ID!
+    # subTaskTitle: String!
+  }
+  type TaskDetail {
+    task: Task
+    subTasks: [Task]
+  }
   type Query {
     getTasks: [Task]
-    getTask(taskId: ID!): Task
+    getTask(taskId: ID!): TaskDetail
+    getSubTasks(subTaskIds: [IdList!]!): [Task]
     login(username: String!, password: String!): User!
   }
   type Mutation {
