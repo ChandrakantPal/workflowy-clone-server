@@ -54,6 +54,7 @@ module.exports = gql`
     createSubTask(taskId: ID!, body: String!): Task!
     deleteSubTask(taskId: ID!, subTaskId: ID!): Task!
     markDone(taskId: ID!): Task!
+    editTask(taskId: ID!, body: String!): Task!
   }
   type Subscription {
     newTask: Task!
