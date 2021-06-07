@@ -52,7 +52,6 @@ module.exports = gql`
     createTask(body: String!): Task!
     deleteTask(taskId: ID!): String!
     createSubTask(taskId: ID!, body: String!): Task!
-    deleteSubTask(taskId: ID!, subTaskId: ID!): Task!
     markDone(taskId: ID!): Task!
     editTask(taskId: ID!, body: String!): Task!
   }
