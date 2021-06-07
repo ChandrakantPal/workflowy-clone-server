@@ -53,26 +53,30 @@ module.exports = {
     async createTask(_, { body }, context) {
       const user = checkAuth(context)
       // console.log(user);
-      if (body.trim() === '') {
-        throw new Error('Task body must not be empty')
+      try {
+        if (body.trim() === '') {
+          throw new Error('Task body must not be empty')
+        }
+        const newTask = new Task({
+          body,
+          user: user.id,
+          username: user.username,
+          createdAt: new Date().toISOString(),
+          isRoot: true,
+          isDone: false,
+          subTasks: [],
+        })
+
+        const task = await newTask.save()
+
+        context.pubsub.publish('NEW_TASK', {
+          newTask: task,
+        })
+
+        return task
+      } catch (error) {
+        throw new Error(error)
       }
-      const newTask = new Task({
-        body,
-        user: user.id,
-        username: user.username,
-        createdAt: new Date().toISOString(),
-        isRoot: true,
-        isDone: false,
-        subTasks: [],
-      })
-
-      const task = await newTask.save()
-
-      context.pubsub.publish('NEW_TASK', {
-        newTask: task,
-      })
-
-      return task
     },
     async deleteTask(_, { taskId }, context) {
       const user = checkAuth(context)
@@ -117,21 +121,24 @@ module.exports = {
         throw new UserInputError('Post not founnd')
       }
     },
-    async editTask(_, { taskId, body }, context){
+    async editTask(_, { taskId, body }, context) {
       checkAuth(context)
-      if (body.trim() === '') {
-        throw new Error('Task body must not be empty')
+      try {
+        if (body.trim() === '') {
+          throw new Error('Task body must not be empty')
+        }
+        const task = await Task.findById(taskId)
+        if (task) {
+          task.body = body
+          await task.save()
+          return task
+        } else {
+          throw new UserInputError('Post not founnd')
+        }
+      } catch (error) {
+        throw new Error(error)
       }
-      const task = await Task.findById(taskId)
-      if (task) {
-        if (task.isDone) {
-        task.body = body
-        await task.save()
-        return task
-      } else {
-        throw new UserInputError('Post not founnd')
-      }
-    }
+    },
   },
   Subscription: {
     newTask: {
