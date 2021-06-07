@@ -16,8 +16,31 @@ module.exports = {
     async getTask(_, { taskId }) {
       try {
         const task = await Task.findById(taskId)
+        const ids = []
+        if (task.subTasks.length > 0) {
+          task.subTasks.map((task) => {
+            ids.push(task.subTaskId)
+          })
+        }
+        const subTasks = await Task.find({ _id: { $in: ids } })
         if (task) {
-          return task
+          return { task, subTasks }
+        } else {
+          throw new Error('Task not found')
+        }
+      } catch (error) {
+        throw new Error(error)
+      }
+    },
+    async getSubTasks(_, { subTaskIds }) {
+      try {
+        const ids = []
+        subTaskIds.map((task) => {
+          ids.push(task.subTaskId)
+        })
+        const subTasks = await Task.find({ _id: { $in: ids } })
+        if (subTasks) {
+          return subTasks
         } else {
           throw new Error('Task not found')
         }
