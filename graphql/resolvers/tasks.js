@@ -5,15 +5,21 @@ const checkAuth = require('../../utils/checkAuth')
 
 module.exports = {
   Query: {
-    async getTasks() {
+    async getTasks(_, __, context) {
+      const { username } = checkAuth(context)
       try {
-        const tasks = await Task.find({ isRoot: true }).sort({ createdAt: -1 })
+        const tasks = await Task.find({
+          $and: [{ isRoot: true }, { username: username }],
+        }).sort({
+          createdAt: -1,
+        })
         return tasks
       } catch (error) {
         throw new Error(error)
       }
     },
-    async getTask(_, { taskId }) {
+    async getTask(_, { taskId }, context) {
+      const { username } = checkAuth(context)
       try {
         const task = await Task.findById(taskId)
         const ids = []
@@ -22,7 +28,9 @@ module.exports = {
             ids.push(task.subTaskId)
           })
         }
-        const subTasks = await Task.find({ _id: { $in: ids } })
+        const subTasks = await Task.find({
+          $and: [{ _id: { $in: ids } }, { username }],
+        })
         if (task) {
           return { task, subTasks }
         } else {
@@ -32,13 +40,16 @@ module.exports = {
         throw new Error(error)
       }
     },
-    async getSubTasks(_, { subTaskIds }) {
+    async getSubTasks(_, { subTaskIds }, context) {
+      const { username } = checkAuth(context)
       try {
         const ids = []
         subTaskIds.map((task) => {
           ids.push(task.subTaskId)
         })
-        const subTasks = await Task.find({ _id: { $in: ids } })
+        const subTasks = await Task.find({
+          $and: [{ _id: { $in: ids } }, { username }],
+        })
         if (subTasks) {
           return subTasks
         } else {
